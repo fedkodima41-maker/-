@@ -18,7 +18,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-URL = "https://uz-grafik.fedkodima41.workers.dev/"
+URL = "https://swrailway.gov.ua"
 OUTPUT = Path(__file__).resolve().parent / "schedule.json"
 
 HEADERS = {
