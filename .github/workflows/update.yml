@@ -28,7 +28,7 @@ jobs:
         run: pip install requests beautifulsoup4
 
       - name: Запуск парсера
-        run: python update.py
+        run: python parser.py
 
       - name: Збереження оновленого файлу
         run: |
