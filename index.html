@@ -260,6 +260,18 @@ a {color:var(--peach)}
   </div>
 </div>
 
+  <script>
+  (function () {
+    const dateInput = document.getElementById('date');
+    if (dateInput) {
+      const now = new Date();
+      const offsetMs = now.getTimezoneOffset() * 60000;
+      const todayStr = new Date(now.getTime() - offsetMs).toISOString().split('T');
+      dateInput.value = todayStr;
+    }
+  })();
+</script>
+
 <script>
 let trains = [];
 let allStations = [];
