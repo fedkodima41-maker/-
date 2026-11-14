@@ -410,6 +410,17 @@ function openModal(id, dt) {
   si.focus();
   $("modal-close").focus();
 }
+  
+  <script>
+  const dateEl = document.getElementById('date');
+  if (dateEl) {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    dateEl.value = `${year}-${month}-${day}`;
+  }
+
 
 function closeModal() { $("modal").classList.remove("open"); }
 
@@ -427,16 +438,7 @@ res.onkeydown = e => {
   }
 };
   
-  <script>
-  const dateEl = document.getElementById('date');
-  if (dateEl) {
-    const d = new Date();
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    dateEl.value = `${year}-${month}-${day}`;
-  }
-</script>
+
 
 
 // Listeners
