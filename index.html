@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101216">
 <title>РЕЙСИ — Ніжин ⇄ Київ</title>
 <style>
 :root {
@@ -110,8 +111,7 @@ button {
 footer {margin-top:25px;color:var(--muted);font-size:12px}
 a {color:var(--peach)}
 .empty {padding:35px;text-align:center;background:var(--panel);border-radius:15px;color:var(--muted)}
-
-/* Modal */
+/* Вікно зупинок */
 .modal-overlay {
   position:fixed;top:0;left:0;right:0;bottom:0;
   background:rgba(0,0,0,0.7);z-index:1000;
@@ -148,7 +148,7 @@ a {color:var(--peach)}
 .modal-station-time.arrival {color:var(--peach)}
 .modal-station-time.departure {color:var(--text)}
 .modal-station-km {font-size:11px;color:var(--muted);white-space:nowrap}
-.modal-train-info {display:flex;gap:16px;margin-bottom:16px;padding:12px;background:var(--panel2);border-radius:10px;border:1px solid var(--border)}
+.modal-train-info {display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;padding:12px;background:var(--panel2);border-radius:10px;border:1px solid var(--border)}
 .modal-train-info span {font-size:13px}
 .modal-search {
   margin-bottom:16px;padding:12px;
@@ -162,7 +162,6 @@ a {color:var(--peach)}
 }
 .modal-search input::placeholder {color:var(--muted)}
 .modal-station.hidden {display:none}
-
 @media(max-width:750px) {
  .search {grid-template-columns:1fr 1fr}
  .swap {grid-column:1}
@@ -185,7 +184,6 @@ a {color:var(--peach)}
 </head>
 <body>
 <div class="container">
-
 <header>
   <div class="brand"><span class="logo">↗</span>РЕЙСИ <span style="color:#ffb38e">/ UA</span></div>
   <div class="status">ЗАЛІЗНИЧНИЙ РОЗКЛАД</div>
@@ -199,20 +197,20 @@ a {color:var(--peach)}
 
 <section class="search">
   <div class="field">
-    <label>ЗВІДКИ</label>
+    <label for="from">ЗВІДКИ</label>
     <input id="from" list="stations-list" placeholder="Оберіть станцію" autocomplete="off">
     <datalist id="stations-list"></datalist>
   </div>
-  <button class="swap" id="swap" title="Поміняти напрямок">⇄</button>
+  <button class="swap" id="swap" title="Поміняти напрямок" type="button">⇄</button>
   <div class="field">
-    <label>КУДИ</label>
+    <label for="to">КУДИ</label>
     <input id="to" list="stations-list" placeholder="Оберіть станцію" autocomplete="off">
   </div>
   <div class="field">
-    <label>ДАТА</label>
+    <label for="date">ДАТА</label>
     <input type="date" id="date">
   </div>
-  <button class="searchBtn" id="search">Знайти рейси →</button>
+  <button class="searchBtn" id="search" type="button">Знайти рейси →</button>
 </section>
 
 <section class="toolbar">
@@ -222,102 +220,204 @@ a {color:var(--peach)}
   </div>
   <div class="filters" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
     <div class="direction-toggle" style="display:flex;gap:8px;margin-right:8px">
-      <button class="direction-btn active" data-direction="nizhyn_kyiv" id="dir-nizhyn-kyiv">Ніжин → Київ</button>
-      <button class="direction-btn" data-direction="kyiv_nizhyn" id="dir-kyiv-nizhyn">Київ → Ніжин</button>
+      <button class="direction-btn active" data-direction="nizhyn_kyiv" id="dir-nizhyn-kyiv" type="button">Ніжин → Київ</button>
+      <button class="direction-btn" data-direction="kyiv_nizhyn" id="dir-kyiv-nizhyn" type="button">Київ → Ніжин</button>
     </div>
-    <button class="filter active" data-filter="all">Усі</button>
-    <button class="filter" data-filter="Електричка">Електрички</button>
-    <button class="filter" data-filter="Регіональний">Регіональні</button>
+    <button class="filter active" data-filter="all" type="button">Усі</button>
+    <button class="filter" data-filter="Електричка" type="button">Електрички</button>
+    <button class="filter" data-filter="Регіональний" type="button">Регіональні</button>
   </div>
 </section>
 
 <section class="cards" id="results"></section>
 
 <div class="notice">
-<script>
-  (function () {
-    const dateInput = document.getElementById('date');
-    if (dateInput) {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const day = String(now.getDate()).padStart(2, '0');
-      dateInput.value = `${year}-${month}-${day}`;
-    }
-  })();
-</script>
-
-  <a href="https://railukraine.com/" target="_blank">Rail Ukraine</a>
-</footer>
-
+  <div id="updated">Завантаження інформації про оновлення...</div>
+  <div style="margin-top:6px">Дані розкладу: <a href="https://poizdato.net/rozklad-poizdiv/kyiv--nizhyn/elektrychky/" target="_blank" rel="noopener noreferrer">Poizdato.net</a></div>
 </div>
 
-<!-- Modal -->
+<footer>
+  Інформаційний сервіс. Перед поїздкою перевіряйте актуальність розкладу в офіційних джерелах.
+  <div style="margin-top:6px"><a href="https://railukraine.com/" target="_blank" rel="noopener noreferrer">Rail Ukraine</a></div>
+</footer>
+</div>
+
+<!-- Вікно зупинок -->
 <div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
   <div class="modal">
     <div class="modal-header">
       <h2 class="modal-title" id="modal-title">Зупинки поїзда</h2>
-      <button class="modal-close" id="modal-close" aria-label="Закрити">&times;</button>
+      <button class="modal-close" id="modal-close" aria-label="Закрити" type="button">&times;</button>
     </div>
     <div class="modal-body" id="modal-body"></div>
   </div>
 </div>
 
-  <script>
-  (function () {
-    const dateInput = document.getElementById('date');
-    if (dateInput) {
-      const now = new Date();
-      const offsetMs = now.getTimezoneOffset() * 60000;
-      const todayStr = new Date(now.getTime() - offsetMs).toISOString().split('T');
-      dateInput.value = todayStr;
-    }
-  })();
-</script>
-
 <script>
+"use strict";
+
 let trains = [];
 let allStations = [];
 let filter = "all";
 let direction = "nizhyn_kyiv";
+let scheduleDate = "";
 
 const $ = id => document.getElementById(id);
 
-async function loadSchedule() {
-  try {
-    const res = await fetch("./trains.json");
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const data = await res.json();
-    trains = data.trains || [];
-
-    const stationSet = new Set();
-    trains.forEach(t => t.stations.forEach(s => stationSet.add(s.name)));
-    allStations = Array.from(stationSet).sort();
-
-    const dl = $("stations-list");
-    dl.innerHTML = allStations.map(n => '<option value="' + n + '">').join("");
-
-    if (trains.length > 0) {
-      const dates = Array.from(new Set(trains.map(t => t.date))).sort();
-      $("date").value = dates[0];
-      $("date").min = dates[0];
-      $("date").max = dates[dates.length - 1];
-    }
-
-    updateFromTo();
-    render();
-  } catch (e) {
-    $("count").textContent = "Помилка завантаження";
-    $("results").innerHTML = '<div class="empty">Не вдалося завантажити trains.json</div>';
-  }
+function formatDateTime(value) {
+  if (!value) return "час оновлення невідомий";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value;
+  return new Intl.DateTimeFormat("uk-UA", {
+    dateStyle: "short",
+    timeStyle: "short"
+  }).format(d);
 }
 
-function dirLabel(d) { return d === "kyiv_nizhyn" ? "Київ → Ніжин" : "Ніжин → Київ"; }
-function defFromTo(d) { return d === "kyiv_nizhyn" ? {from:"Київ",to:"Ніжин"} : {from:"Ніжин",to:"Київ"}; }
+function durationBetween(start, end) {
+  if (!start || !end) return "Тривалість невідома";
+  const toMinutes = value => {
+    const [h, m] = value.split(":").map(Number);
+    return h * 60 + m;
+  };
+  let minutes = toMinutes(end) - toMinutes(start);
+  if (minutes < 0) minutes += 24 * 60;
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  return hours ? `${hours} год ${String(mins).padStart(2, "0")} хв` : `${mins} хв`;
+}
+
+/*
+ * schedule.json має вкладену структуру:
+ * directions -> напрямок -> trains -> stations.
+ * Тут перетворюємо її у формат, який використовує інтерфейс.
+ */
+function normalizeSchedule(data) {
+  const result = [];
+
+  for (const [dirKey, dirData] of Object.entries(data.directions || {})) {
+    for (const raw of (dirData.trains || [])) {
+      const stations = Array.isArray(raw.stations) ? raw.stations : [];
+      if (!stations.length) continue;
+
+      const first = stations[0];
+      const last = stations[stations.length - 1];
+      const dep = first.departure || first.arrival || "";
+      const arr = last.arrival || last.departure || "";
+      const number = String(raw.number || raw.tid || "—");
+
+      result.push({
+        uid: `${dirKey}:${number}`,
+        id: number,
+        date: data.date || "",
+        direction: dirKey,
+        from: first.name,
+        to: last.name,
+        dep,
+        arr,
+        duration: durationBetween(dep, arr),
+        course: raw.course || dirData.title || "",
+        kind: "Електричка",
+        days: raw.days || "графік уточнюйте",
+        stops: stations.length,
+        stations
+      });
+    }
+  }
+
+  return result;
+}
+
+function dirLabel(d) {
+  return d === "kyiv_nizhyn" ? "Київ → Ніжин" : "Ніжин → Київ";
+}
+
+function defFromTo(d) {
+  return d === "kyiv_nizhyn"
+    ? {from: "Київ", to: "Ніжин"}
+    : {from: "Ніжин", to: "Київ"};
+}
+
 function updateFromTo() {
   const ft = defFromTo(direction);
   $("from").value = ft.from;
   $("to").value = ft.to;
+}
+
+function updateBtns() {
+  document.querySelectorAll(".direction-btn").forEach(button => {
+    button.classList.toggle("active", button.dataset.direction === direction);
+  });
+}
+
+async function loadSchedule() {
+  $("count").textContent = "Завантаження...";
+  $("results").innerHTML = "";
+
+  try {
+    // cache-busting не дає браузеру показувати вчорашній JSON із кешу.
+    const response = await fetch(`./schedule.json?v=${Date.now()}`, {
+      cache: "no-store"
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (!data.directions) {
+      throw new Error("У schedule.json немає directions");
+    }
+
+    trains = normalizeSchedule(data);
+    scheduleDate = data.date || "";
+
+    if (!trains.length) {
+      throw new Error("У schedule.json немає поїздів");
+    }
+
+    // Дата береться саме з JSON, який створив parser.py.
+    // Не підміняємо її першою датою зі старого trains.json.
+    if (scheduleDate) {
+      $("date").value = scheduleDate;
+    } else {
+      const now = new Date();
+      $("date").value = new Date(
+        now.getTime() - now.getTimezoneOffset() * 60000
+      ).toISOString().slice(0, 10);
+    }
+
+    allStations = [...new Set(
+      trains.flatMap(train => train.stations.map(station => station.name))
+    )].sort((a, b) => a.localeCompare(b, "uk"));
+
+    $("stations-list").innerHTML = allStations
+      .map(name => `<option value="${escapeHtml(name)}"></option>`)
+      .join("");
+
+    $("updated").textContent =
+      `Розклад на ${scheduleDate || "невідому дату"}. Остання перевірка: ${formatDateTime(data.checked)}.`;
+
+    updateFromTo();
+    updateBtns();
+    render();
+  } catch (error) {
+    console.error("Помилка завантаження розкладу:", error);
+    $("count").textContent = "Не вдалося завантажити розклад";
+    $("subtitle").textContent = "Перевірте з'єднання та файл schedule.json";
+    $("updated").textContent = "Не вдалося отримати актуальні дані.";
+    $("results").innerHTML =
+      `<div class="empty">Помилка завантаження schedule.json: ${escapeHtml(error.message)}</div>`;
+  }
+}
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  })[char]);
 }
 
 function render() {
@@ -325,141 +425,217 @@ function render() {
   const fromIn = $("from").value.trim();
   const toIn = $("to").value.trim();
 
-  let list = trains.filter(t => t.direction === direction && t.date === date);
-  if (fromIn) list = list.filter(t => t.stations.some(s => s.name === fromIn && s.departure));
-  if (toIn) list = list.filter(t => t.stations.some(s => s.name === toIn && s.arrival));
-  if (filter !== "all") list = list.filter(t => t.kind === filter);
+  let list = trains.filter(train =>
+    train.direction === direction && train.date === date
+  );
 
-  $("count").textContent = list.length + " рейсів";
-  $("subtitle").textContent = dirLabel(direction) + " · " + date;
+  if (fromIn) {
+    list = list.filter(train =>
+      train.stations.some(station =>
+        station.name.toLocaleLowerCase("uk") === fromIn.toLocaleLowerCase("uk") &&
+        (station.departure || station.arrival)
+      )
+    );
+  }
+
+  if (toIn) {
+    list = list.filter(train =>
+      train.stations.some(station =>
+        station.name.toLocaleLowerCase("uk") === toIn.toLocaleLowerCase("uk") &&
+        (station.arrival || station.departure)
+      )
+    );
+  }
+
+  if (filter !== "all") {
+    list = list.filter(train => train.kind === filter);
+  }
+
+  $("count").textContent = `${list.length} рейсів`;
+  $("subtitle").textContent = `${dirLabel(direction)} · ${date}`;
 
   if (!list.length) {
-    $("results").innerHTML = '<div class="empty">Рейсів за цими параметрами немає</div>';
+    const message = date !== scheduleDate
+      ? `У завантаженому файлі є розклад лише на ${scheduleDate || "одну дату"}. Нові дати з'являться після оновлення schedule.json.`
+      : "Рейсів за цими параметрами немає.";
+    $("results").innerHTML = `<div class="empty">${escapeHtml(message)}</div>`;
     return;
   }
 
-  $("results").innerHTML = list.map(t => {
-    const fs = t.stations.find(s => s.name === fromIn);
-    const ts = t.stations.find(s => s.name === toIn);
-    const fTime = fs?.departure;
-    const tTime = ts?.arrival;
-    const hasQ = fromIn || toIn;
-    const dFrom = fromIn || t.from;
-    const dTo = toIn || t.to;
-    const fHtml = (hasQ && fTime) ? ' <span class="station-time departure">🕑 ' + fTime + '</span>' : '';
-    const tHtml = (hasQ && tTime) ? ' <span class="station-time arrival">🕐 ' + tTime + '</span>' : '';
-    const kTag = t.kind === "Регіональний" ? "reg" : "";
+  list.sort((a, b) => a.dep.localeCompare(b.dep));
 
-    return '<article class="train" tabindex="0" data-train-id="' + t.id + '" data-train-date="' + t.date + '">'
-      + '<div><div class="time">' + t.dep + '</div><div class="duration">' + t.duration + '</div></div>'
-      + '<div class="routeBox"><div class="route">'
-      + '<span class="station">' + dFrom + fHtml + '</span>'
-      + '<span class="line"></span>'
-      + '<span class="station">' + dTo + tHtml + '</span>'
-      + '</div>'
-      + '<div class="course" style="font-size:12px;color:var(--muted);margin:4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + t.course + '</div>'
-      + '<div class="meta">'
-      + '<span class="tag ' + kTag + '">' + t.kind + '</span>'
-      + '<span class="tag">№ ' + t.id + '</span>'
-      + '<span class="tag">' + t.days + '</span>'
-      + '<span class="tag">' + t.stops + ' зупинок</span>'
-      + '</div></div>'
-      + '<div class="arrival">' + t.arr + '<small>прибуття</small></div>'
-      + '</article>';
+  $("results").innerHTML = list.map(train => {
+    const fromStation = train.stations.find(station => station.name === fromIn);
+    const toStation = train.stations.find(station => station.name === toIn);
+    const fromTime = fromStation?.departure || fromStation?.arrival;
+    const toTime = toStation?.arrival || toStation?.departure;
+    const hasCustomRoute = Boolean(fromIn || toIn);
+    const displayFrom = fromIn || train.from;
+    const displayTo = toIn || train.to;
+
+    const fromTimeHtml = hasCustomRoute && fromTime
+      ? ` <span class="station-time departure">🕑 ${escapeHtml(fromTime)}</span>`
+      : "";
+    const toTimeHtml = hasCustomRoute && toTime
+      ? ` <span class="station-time arrival">🕐 ${escapeHtml(toTime)}</span>`
+      : "";
+
+    return `
+      <article class="train" tabindex="0" role="button"
+        data-train-uid="${escapeHtml(train.uid)}">
+        <div>
+          <div class="time">${escapeHtml(train.dep || "—")}</div>
+          <div class="duration">${escapeHtml(train.duration)}</div>
+        </div>
+        <div class="routeBox">
+          <div class="route">
+            <span class="station">${escapeHtml(displayFrom)}${fromTimeHtml}</span>
+            <span class="line"></span>
+            <span class="station">${escapeHtml(displayTo)}${toTimeHtml}</span>
+          </div>
+          <div class="course" style="font-size:12px;color:var(--muted);margin:4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+            ${escapeHtml(train.course)}
+          </div>
+          <div class="meta">
+            <span class="tag">${escapeHtml(train.kind)}</span>
+            <span class="tag">№ ${escapeHtml(train.id)}</span>
+            <span class="tag">${escapeHtml(train.days)}</span>
+            <span class="tag">${train.stops} зупинок</span>
+          </div>
+        </div>
+        <div class="arrival">${escapeHtml(train.arr || "—")}<small>прибуття</small></div>
+      </article>
+    `;
   }).join("");
 }
 
-function openModal(id, dt) {
-  const tr = trains.find(t => t.id === id && t.date === dt);
-  if (!tr) return;
+function openModal(uid) {
+  const train = trains.find(item => item.uid === uid);
+  if (!train) return;
 
-  const m = $("modal");
-  const b = $("modal-body");
-  const tl = $("modal-title");
+  const modal = $("modal");
+  const body = $("modal-body");
 
-  tl.textContent = "Поїзд №" + tr.id + " (" + tr.kind + ") — " + tr.course;
+  $("modal-title").textContent =
+    `Поїзд №${train.id} (${train.kind}) — ${train.course}`;
 
-  const stHtml = tr.stations.map(s => {
-    const a = s.arrival ? '<span class="modal-station-time arrival">🕐 ' + s.arrival + '</span>' : '';
-    const d = s.departure ? '<span class="modal-station-time departure">🕑 ' + s.departure + '</span>' : '';
-    const km = (s.km !== null && s.km !== undefined) ? s.km + ' км' : '';
-    return '<div class="modal-station" data-name="' + s.name.toLowerCase() + '">'
-      + '<span class="modal-station-name">' + s.name + '</span>'
-      + '<div class="modal-station-times">' + a + d + '</div>'
-      + '<span class="modal-station-km">' + km + '</span>'
-      + '</div>';
+  const stationsHtml = train.stations.map(station => {
+    const arrival = station.arrival
+      ? `<span class="modal-station-time arrival">🕐 ${escapeHtml(station.arrival)}</span>`
+      : "";
+    const departure = station.departure
+      ? `<span class="modal-station-time departure">🕑 ${escapeHtml(station.departure)}</span>`
+      : "";
+    const km = station.km !== null && station.km !== undefined
+      ? `${escapeHtml(station.km)} км`
+      : "";
+
+    return `
+      <div class="modal-station" data-name="${escapeHtml(station.name.toLocaleLowerCase("uk"))}">
+        <span class="modal-station-name">${escapeHtml(station.name)}</span>
+        <div class="modal-station-times">${arrival}${departure}</div>
+        <span class="modal-station-km">${km}</span>
+      </div>
+    `;
   }).join("");
 
-  b.innerHTML = '<div class="modal-train-info">'
-    + '<span><b>Маршрут:</b> ' + tr.course + '</span>'
-    + '<span><b>Дні курсування:</b> ' + tr.days + '</span>'
-    + '<span><b>Тривалість:</b> ' + tr.duration + '</span>'
-    + '<span><b>Зупинок:</b> ' + tr.stops + '</span>'
-    + '</div>'
-    + '<div class="modal-search"><input type="search" id="modal-station-search" placeholder="🔍 Пошук станції..." aria-label="Пошук станцій"></div>'
-    + '<div class="modal-stations" id="modal-stations-list">' + stHtml + '</div>';
+  body.innerHTML = `
+    <div class="modal-train-info">
+      <span><b>Маршрут:</b> ${escapeHtml(train.course)}</span>
+      <span><b>Дні курсування:</b> ${escapeHtml(train.days)}</span>
+      <span><b>Тривалість:</b> ${escapeHtml(train.duration)}</span>
+      <span><b>Зупинок:</b> ${train.stops}</span>
+    </div>
+    <div class="modal-search">
+      <input type="search" id="modal-station-search"
+        placeholder="🔍 Пошук станції..." aria-label="Пошук станцій">
+    </div>
+    <div class="modal-stations" id="modal-stations-list">${stationsHtml}</div>
+  `;
 
-  const si = $("modal-station-search");
-  const els = b.querySelectorAll(".modal-station");
-  si.addEventListener("input", e => {
-    const q = e.target.value.toLowerCase().trim();
-    els.forEach(el => {
-      if (!q || el.dataset.name.includes(q)) el.classList.remove("hidden");
-      else el.classList.add("hidden");
+  const searchInput = $("modal-station-search");
+  const stationElements = body.querySelectorAll(".modal-station");
+
+  searchInput.addEventListener("input", event => {
+    const query = event.target.value.toLocaleLowerCase("uk").trim();
+    stationElements.forEach(element => {
+      element.classList.toggle(
+        "hidden",
+        Boolean(query) && !element.dataset.name.includes(query)
+      );
     });
   });
 
-  m.classList.add("open");
-  si.focus();
-  $("modal-close").focus();
+  modal.classList.add("open");
+  searchInput.focus();
 }
 
+function closeModal() {
+  $("modal").classList.remove("open");
+}
 
-function closeModal() { $("modal").classList.remove("open"); }
+// Клік або Enter/Пробіл відкриває зупинки поїзда.
+$("results").addEventListener("click", event => {
+  const card = event.target.closest(".train");
+  if (card) openModal(card.dataset.trainUid);
+});
 
-// Delegation
-const res = $("results");
-res.onclick = e => {
-  const c = e.target.closest(".train");
-  if (c) openModal(c.dataset.trainId, c.dataset.trainDate);
-};
-res.onkeydown = e => {
-  if ((e.key === "Enter" || e.key === " ") && e.target.closest(".train")) {
-    e.preventDefault();
-    const c = e.target.closest(".train");
-    openModal(c.dataset.trainId, c.dataset.trainDate);
+$("results").addEventListener("keydown", event => {
+  if (event.key === "Enter" || event.key === " ") {
+    const card = event.target.closest(".train");
+    if (card) {
+      event.preventDefault();
+      openModal(card.dataset.trainUid);
+    }
   }
-};
-  
+});
 
-
-
-// Listeners
 $("search").addEventListener("click", render);
+
 $("swap").addEventListener("click", () => {
   direction = direction === "kyiv_nizhyn" ? "nizhyn_kyiv" : "kyiv_nizhyn";
-  updateBtns(); updateFromTo(); render();
+  updateBtns();
+  updateFromTo();
+  render();
 });
-function updateBtns() {
-  document.querySelectorAll(".direction-btn").forEach(b => b.classList.toggle("active", b.dataset.direction === direction));
-}
-document.querySelectorAll(".direction-btn").forEach(b => {
-  b.addEventListener("click", () => { direction = b.dataset.direction; updateBtns(); updateFromTo(); render(); });
-});
-document.querySelectorAll(".filter").forEach(b => {
-  b.addEventListener("click", () => {
-    document.querySelectorAll(".filter").forEach(x => x.classList.remove("active"));
-    b.classList.add("active"); filter = b.dataset.filter; render();
+
+document.querySelectorAll(".direction-btn").forEach(button => {
+  button.addEventListener("click", () => {
+    direction = button.dataset.direction;
+    updateBtns();
+    updateFromTo();
+    render();
   });
 });
+
+document.querySelectorAll(".filter").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".filter").forEach(item => item.classList.remove("active"));
+    button.classList.add("active");
+    filter = button.dataset.filter;
+    render();
+  });
+});
+
 $("date").addEventListener("change", render);
-let rt;
-["from","to"].forEach(id => $(id).addEventListener("input", () => { clearTimeout(rt); rt = setTimeout(render, 150); }));
+
+let searchTimer;
+["from", "to"].forEach(id => {
+  $(id).addEventListener("input", () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(render, 150);
+  });
+});
+
 $("modal-close").addEventListener("click", closeModal);
-$("modal").addEventListener("click", e => { if (e.target === $("modal")) closeModal(); });
-document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
-  
-loadSchedule();  
+$("modal").addEventListener("click", event => {
+  if (event.target === $("modal")) closeModal();
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") closeModal();
+});
+
+loadSchedule();
 </script>
 </body>
 </html>
