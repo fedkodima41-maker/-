@@ -453,6 +453,18 @@ $("modal").addEventListener("click", e => { if (e.target === $("modal")) closeMo
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
 
 loadSchedule();
+  <script>
+  const dateEl = document.getElementById('date');
+  if (dateEl) {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    dateEl.value = `${year}-${month}-${day}`;
+  }
+</script>
+
+  
 </script>
 </body>
 </html>
