@@ -1,7 +1,7 @@
 {
   "source": "https://poizdato.net/rozklad-poizdiv/kyiv--nizhyn/elektrychky/",
-  "checked": "2026-11-24T16:06:36+02:00",
-  "date": "2026-11-24",
+  "checked": "2026-11-25T15:19:56+02:00",
+  "date": "2026-11-25",
   "route": "Київ — Ніжин",
   "directions": {
     "kyiv_nizhyn": {
@@ -2344,6 +2344,20 @@
               "name": "Київ-Пас.(Північна)",
               "km": null,
               "arrival": "06:22",
+              "departure": "06:25"
+            },
+            {
+              "id": 33,
+              "name": "Караваєві Дачі",
+              "km": null,
+              "arrival": "06:30",
+              "departure": "06:31"
+            },
+            {
+              "id": 34,
+              "name": "Київ-Волинський",
+              "km": null,
+              "arrival": "06:34",
               "departure": null
             }
           ]
@@ -2569,20 +2583,6 @@
               "name": "Київ-Пас.(Північна)",
               "km": null,
               "arrival": "06:22",
-              "departure": "06:25"
-            },
-            {
-              "id": 33,
-              "name": "Караваєві Дачі",
-              "km": null,
-              "arrival": "06:30",
-              "departure": "06:31"
-            },
-            {
-              "id": 34,
-              "name": "Київ-Волинський",
-              "km": null,
-              "arrival": "06:34",
               "departure": null
             }
           ]
